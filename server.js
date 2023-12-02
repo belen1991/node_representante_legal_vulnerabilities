@@ -1,38 +1,21 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const bcrypt = require('bcrypt');
+const express = require('express')
+const body_parser = require('body-parser')
+
 const config = require('./config')
+const routes = require('./network/routes')
+const db = require('./db')
 
-const app = express();
-const port = config.PORT;
-const mongoURI = config.DB_URL;
+var app = express()
+const server = require('http').Server(app)
 
-app.use(bodyParser.json());
-app.use('/', express.static('public'));
+db( config.DB_URL )
 
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true, dbname: 'ups' });
+app.use( body_parser.json() )
+app.use( body_parser.urlencoded({extended: false}) )
+app.use('/', express.static('public'))
 
-const User = require('./model')
+routes( app )
 
-app.get('/user', async (req, res) => {
-  const email = req.query.email;
-
-    try{
-      const objeto = await User.findOne({ email: email });
-    
-      if (!objeto) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-
-      res.json(objeto);
-    }
-    catch(err) {
-      console.error(err);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+server.listen(config.PORT, () => {
+    console.log(`La aplicacion se encuentra arriba en http://localhost:${config.PORT}/`)
 });
