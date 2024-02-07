@@ -20,6 +20,6 @@
     "http": "^0.0.1-security",
     "mongoose": "^7.6.2",
     "mongose": "^0.0.2-security",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.3"
   }
 }
